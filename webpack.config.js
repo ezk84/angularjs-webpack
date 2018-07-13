@@ -103,8 +103,8 @@ module.exports = function makeWebpackConfig() {
       //
       // Reference: https://github.com/postcss/postcss-loader
       // Postprocess your css with PostCSS plugins
-      test: /\.css$/,
-      // Reference: https://github.com/webpack/extract-text-webpack-plugin
+      test: /\.(le|c)ss$/,
+      // Reference: https://github.com/webpack-contrib/mini-css-extract-plugin
       // Extract css files in production builds
       //
       // Reference: https://github.com/webpack/style-loader
@@ -125,6 +125,12 @@ module.exports = function makeWebpackConfig() {
             plugins: [autoprefixer]
           }
         },
+        {
+          loader: 'less-loader',
+          options: {
+            sourceMap: true
+          }
+        }
       ]
     }, {
       // ASSET LOADER

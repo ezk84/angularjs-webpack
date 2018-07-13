@@ -1,7 +1,7 @@
-import angular from 'angular';
-
+import '../style/main.less';
 import '../style/app.css';
 
+import angular from 'angular';
 import TestService from './test.service';
 
 let app = () => {
