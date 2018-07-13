@@ -2,6 +2,8 @@ import angular from 'angular';
 
 import '../style/app.css';
 
+import TestService from './test.service';
+
 let app = () => {
   return {
     template: require('./app.html'),
@@ -11,8 +13,14 @@ let app = () => {
 };
 
 class AppCtrl {
-  constructor() {
+  /**
+   *
+   * @param {TestService} testService
+   */
+  constructor(testService) {
+    'ngInject'
     this.url = 'https://github.com/preboot/angular-webpack';
+    testService.doSomething();
   }
 }
 
@@ -20,6 +28,7 @@ const MODULE_NAME = 'app';
 
 angular.module(MODULE_NAME, [])
   .directive('app', app)
-  .controller('AppCtrl', AppCtrl);
+  .controller('AppCtrl', AppCtrl)
+  .service('testService', TestService);
 
 export default MODULE_NAME;
