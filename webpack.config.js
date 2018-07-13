@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 
 // Modules
@@ -94,8 +96,18 @@ module.exports = function makeWebpackConfig() {
       // Transpile .js files using babel-loader
       // Compiles ES6 and ES7 into ES5 code
       test: /\.js$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/
+      exclude: /node_modules/,
+      use: [
+        {
+          loader:'babel-loader'
+        },
+        {
+          loader: 'eslint-loader',
+          options: {
+            cache: true
+          }
+        },
+      ],
     }, {
       // CSS LOADER
       // Reference: https://github.com/webpack/css-loader
