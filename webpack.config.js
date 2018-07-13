@@ -4,7 +4,7 @@
 var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 /**
@@ -14,6 +14,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProd = ENV === 'build';
+var isDev = !isProd;
 
 module.exports = function makeWebpackConfig() {
   /**
@@ -32,6 +33,13 @@ module.exports = function makeWebpackConfig() {
   config.entry = isTest ? void 0 : {
     app: './src/app/app.js'
   };
+
+  /**
+   * Mode
+   * Reference: https://webpack.js.org/concepts/mode/
+   * Enables and disables plugins optimized for each mode.
+   */
+  config.mode = isProd? 'production' : 'development';
 
   /**
    * Output
@@ -102,13 +110,22 @@ module.exports = function makeWebpackConfig() {
       // Reference: https://github.com/webpack/style-loader
       // Use style-loader in development.
 
-      loader: isTest ? 'null-loader' : ExtractTextPlugin.extract({
-        fallbackLoader: 'style-loader',
-        loader: [
-          {loader: 'css-loader', query: {sourceMap: true}},
-          {loader: 'postcss-loader'}
-        ],
-      })
+      use: [
+        isTest? 'null-loader' : isDev? 'style-loader' : MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: {
+            sourceMap: true,
+          },
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: true,
+            plugins: [autoprefixer]
+          }
+        },
+      ]
     }, {
       // ASSET LOADER
       // Reference: https://github.com/webpack/file-loader
@@ -159,16 +176,7 @@ module.exports = function makeWebpackConfig() {
    * Reference: http://webpack.github.io/docs/configuration.html#plugins
    * List: http://webpack.github.io/docs/list-of-plugins.html
    */
-  config.plugins = [
-    new webpack.LoaderOptionsPlugin({
-      test: /\.scss$/i,
-      options: {
-        postcss: {
-          plugins: [autoprefixer]
-        }
-      }
-    })
-  ];
+  config.plugins = [];
 
   // Skip rendering index.html in test mode
   if (!isTest) {
@@ -178,30 +186,25 @@ module.exports = function makeWebpackConfig() {
       new HtmlWebpackPlugin({
         template: './src/public/index.html',
         inject: 'body'
-      }),
+      })
+    );
 
-      // Reference: https://github.com/webpack/extract-text-webpack-plugin
+    if (isProd) {
+      // Reference: https://github.com/webpack-contrib/mini-css-extract-plugin
       // Extract css files
       // Disabled when in test mode or not in build mode
-      new ExtractTextPlugin({filename: 'css/[name].css', disable: !isProd, allChunks: true})
-    )
+      config.plugins.push(
+        new MiniCssExtractPlugin({
+          filename: 'css/[name].css',
+          chunkFilename: 'css/[id].css'
+        })
+      );
+    }
   }
 
-  // Add build specific plugins
+  // Add build specific plugins that aren't enabled with mode == production
   if (isProd) {
     config.plugins.push(
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
-      // Only emit files when there are no errors
-      new webpack.NoErrorsPlugin(),
-
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
-      // Dedupe modules in the output
-      new webpack.optimize.DedupePlugin(),
-
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
-      // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin(),
-
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin
       new CopyWebpackPlugin([{
@@ -218,7 +221,8 @@ module.exports = function makeWebpackConfig() {
   config.devServer = {
     contentBase: './src/public',
     stats: 'minimal',
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    overlay: true
   };
 
   return config;
