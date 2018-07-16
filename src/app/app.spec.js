@@ -1,3 +1,4 @@
+import angular from 'angular';
 import app from './app';
 
 describe('app', () => {

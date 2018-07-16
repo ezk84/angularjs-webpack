@@ -10,10 +10,10 @@ module.exports = {
     },
     "rules": {
         "accessor-pairs": "error",
-        "array-bracket-newline": "error",
+        "array-bracket-newline": "off",
         "array-bracket-spacing": "error",
         "array-callback-return": "error",
-        "array-element-newline": "error",
+        "array-element-newline": "off",
         "arrow-body-style": "off",
         "arrow-parens": [
             "error",
@@ -33,7 +33,7 @@ module.exports = {
         "camelcase": "error",
         "capitalized-comments": "off",
         "class-methods-use-this": "error",
-        "comma-dangle": "error",
+        "comma-dangle": ["error", "always-multiline"],
         "comma-spacing": [
             "error",
             {
@@ -97,7 +97,7 @@ module.exports = {
             "always"
         ],
         "max-depth": "error",
-        "max-len": "error",
+        "max-len": ["error", {"ignoreComments": true}],
         "max-lines": "error",
         "max-nested-callbacks": "error",
         "max-params": "error",
@@ -107,7 +107,7 @@ module.exports = {
             "error",
             "separate-lines"
         ],
-        "multiline-ternary": "error",
+        "multiline-ternary": "off",
         "new-cap": "error",
         "new-parens": "error",
         "newline-after-var": [
@@ -157,7 +157,7 @@ module.exports = {
         "no-native-reassign": "error",
         "no-negated-condition": "error",
         "no-negated-in-lhs": "error",
-        "no-nested-ternary": "error",
+        "no-nested-ternary": "off",
         "no-new": "error",
         "no-new-func": "error",
         "no-new-object": "error",
@@ -167,8 +167,8 @@ module.exports = {
         "no-param-reassign": "error",
         "no-path-concat": "error",
         "no-plusplus": "error",
-        "no-process-env": "error",
-        "no-process-exit": "error",
+        "no-process-env": "off",
+        "no-process-exit": "off",
         "no-proto": "error",
         "no-prototype-builtins": "error",
         "no-restricted-globals": "error",
@@ -187,11 +187,11 @@ module.exports = {
         "no-sync": "error",
         "no-tabs": "error",
         "no-template-curly-in-string": "error",
-        "no-ternary": "error",
+        "no-ternary": "off",
         "no-throw-literal": "error",
         "no-trailing-spaces": "error",
         "no-undef-init": "error",
-        "no-undefined": "error",
+        "no-undefined": "off",
         "no-underscore-dangle": "error",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
@@ -209,14 +209,23 @@ module.exports = {
         "no-whitespace-before-property": "error",
         "no-with": "error",
         "nonblock-statement-body-position": "error",
-        "object-curly-newline": "error",
+        "object-curly-newline": "off",
         "object-curly-spacing": "error",
         "object-property-newline": "error",
         "object-shorthand": "error",
-        "one-var": "error",
+        "one-var": "off",
         "one-var-declaration-per-line": "error",
         "operator-assignment": "error",
-        "operator-linebreak": "error",
+        "operator-linebreak": [
+            "error",
+            "after",
+            {
+                "overrides": {
+                    "?": "after",
+                    ":": "after"
+                }
+            }
+        ],
         "padded-blocks": "off",
         "padding-line-between-statements": "error",
         "prefer-arrow-callback": "error",
@@ -271,5 +280,13 @@ module.exports = {
         "wrap-regex": "error",
         "yield-star-spacing": "error",
         "yoda": "error"
-    }
+    },
+    "overrides": [
+        {
+            "files": ["**/*.spec.js"],
+            "env": {
+                "jasmine": true
+            }
+        }
+    ]
 };
